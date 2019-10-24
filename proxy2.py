@@ -18,7 +18,6 @@ from OpenSSL import crypto
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 from SocketServer import ThreadingMixIn
 from cStringIO import StringIO
-from subprocess import Popen, PIPE
 from HTMLParser import HTMLParser
 
 
@@ -155,6 +154,8 @@ class ProxyRequestHandler(BaseHTTPRequestHandler):
         if req_body_modified is False:
             self.send_error(403)
             return
+        elif req_body_modified is True:
+            return #replaced as blocked
         elif req_body_modified is not None:
             req_body = req_body_modified
             req.headers['Content-length'] = str(len(req_body))
@@ -399,7 +400,7 @@ def test(HandlerClass=ProxyRequestHandler, ServerClass=ThreadingHTTPServer, prot
     httpd = ServerClass(server_address, HandlerClass)
 
     sa = httpd.socket.getsockname()
-    print "Serving HTTP Proxy on", sa[0], "port", sa[1], "..."
+    print ("Serving HTTP Proxy on", sa[0], "port", sa[1], "...")
     httpd.serve_forever()
 
 
